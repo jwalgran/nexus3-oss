@@ -1,36 +1,51 @@
 ---
 - name: Reload systemd
-  ansible.builtin.systemd:
-    daemon-reload: true
-    name: nexus.service
+  # FUTURE Instead of skipping detect a lack of running system manager
+  # ansible.builtin.systemd:
+  #   daemon-reload: true
+  #   name: nexus.service
+  ansible.builtin.debug:
+    msg: "Skipped to work around provisioning in a container without a system manager"
   listen: systemd-reload
 
 - name: Nexus systemd service restart
-  ansible.builtin.systemd:
-    name: nexus.service
-    state: restarted
-    no_block: true
+  # FUTURE Instead of skipping detect a lack of running system manager
+  # ansible.builtin.systemd:
+  #   name: nexus.service
+  #   state: restarted
+  #   no_block: true
+  ansible.builtin.debug:
+    msg: "Skipped to work around provisioning in a container without a system manager"
   listen: nexus-service-restart
   when: ansible_service_mgr == 'systemd'
 
 - name: Nexus sysv service restart
-  ansible.builtin.service:
-    name: nexus
-    state: restarted
+  # FUTURE Instead of skipping detect a lack of running system manager
+  # ansible.builtin.service:
+  #   name: nexus
+  #   state: restarted
+  ansible.builtin.debug:
+    msg: "Skipped to work around provisioning in a container without a system manager"
   listen: nexus-service-restart
   when: ansible_service_mgr != 'systemd'
 
 - name: Nexus systemd service stop
-  ansible.builtin.systemd:
-    name: nexus.service
-    state: stopped
+  # FUTURE Instead of skipping detect a lack of running system manager
+  # ansible.builtin.systemd:
+  #   name: nexus.service
+  #   state: stopped
+  ansible.builtin.debug:
+    msg: "Skipped to work around provisioning in a container without a system manager"
   listen: nexus-service-stop
   when: nexus_systemd_service_file.stat.exists
 
 - name: Nexus sysv service stop
-  ansible.builtin.service:
-    name: nexus
-    state: stopped
+  # FUTURE Instead of skipping detect a lack of running system manager
+  # ansible.builtin.service:
+  #   name: nexus
+  #   state: stopped
+  ansible.builtin.debug:
+    msg: "Skipped to work around provisioning in a container without a system manager"
   listen: nexus-service-stop
   when: nexus_sysv_service_file.stat.exists
 

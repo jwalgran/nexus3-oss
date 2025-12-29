@@ -421,26 +421,36 @@
 - name: Run all notified handlers now
   ansible.builtin.meta: flush_handlers
 
-- name: Enable nexus systemd service and make sure it is started
-  ansible.builtin.systemd:
-    name: nexus.service
-    enabled: true
-    state: started
-    no_block: true
+# FUTURE Only run this if a service manager is not running
+- name: Start nexus
+  ansible.builtin.shell:
+    cmd: "nohup {{ nexus_installation_dir }}/nexus-latest/bin/nexus start > /var/log/nexus.log 2>&1 &"
   notify:
     - wait-for-nexus
     - wait-for-nexus-port
-  when: ansible_service_mgr == 'systemd'
 
-- name: Enable nexus sysv service and make sure it is started
-  ansible.builtin.service:
-    name: nexus
-    enabled: true
-    state: started
-  notify:
-    - wait-for-nexus
-    - wait-for-nexus-port
-  when: ansible_service_mgr != 'systemd'
+# FUTURE Instead of skipping detect a lack of running system manager
+# - name: Enable nexus systemd service and make sure it is started
+#   ansible.builtin.systemd:
+#     name: nexus.service
+#     enabled: true
+#     state: started
+#     no_block: true
+#   notify:
+#     - wait-for-nexus
+#     - wait-for-nexus-port
+#   when: ansible_service_mgr == 'systemd'
+
+# FUTURE Instead of skipping detect a lack of running system manager
+# - name: Enable nexus sysv service and make sure it is started
+#   ansible.builtin.service:
+#     name: nexus
+#     enabled: true
+#     state: started
+#   notify:
+#     - wait-for-nexus
+#     - wait-for-nexus-port
+#   when: ansible_service_mgr != 'systemd'
 
 - name: Install plugins from remote source
   ansible.builtin.get_url:
